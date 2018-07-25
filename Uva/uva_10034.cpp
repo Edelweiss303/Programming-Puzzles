@@ -18,7 +18,6 @@
  *  
  *    Implement Kruskal's algorithm to find the weight of the minimum spanning tree.
  *
- *
  * Used Resources:
  *
  *   
@@ -32,6 +31,7 @@
  */
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <stdio.h>
 #include <math.h>
@@ -40,12 +40,60 @@
 
 using namespace std;
 
+//Struct defining each vertex
+struct vertex{
+    double x, y;
+};
+
 //Struct defining each edge as an item with a weight and a start and end point
 struct edge {
     long double weight;
-    int start;
-    int end;
+    vertex start;
+    vertex end;
 };
+
+
+
+vector<vector<vertex>> listOfSets; //Our disjoint set
+
+//This function joins the set containing A and the set containing B
+bool Union(vertex A, vertex B){
+    int index1;
+    int index2;
+    for(int i = 0; i < listOfSets.size(); i++){ //search for A
+        for(int j = 0; j < listOfSets[i].size(); j++){
+            if(listOfSets[i][j].x == A.x && listOfSets[i][j].y == A.y){
+                index1 = i;
+                //cout << "element " << A.x << ", " << A.y << " found at: " << j << endl;
+            }
+        }
+    }
+    for(int i = 0; i < listOfSets.size(); i++){ //search for B
+        for(int j = 0; j < listOfSets[i].size(); j++){
+            if(listOfSets[i][j].x == B.x && listOfSets[i][j].y == B.y){
+                index2 = i;
+                //cout << "element " << B.x << ", " << B.y << " found at: " << j << endl;
+            }
+        }    
+    }
+
+    if(index1 != index2){ //Join the two sets and return true if A and B are in different sets
+        listOfSets[index1].insert(listOfSets[index1].end(), listOfSets[index2].begin(), listOfSets[index2].end());
+        listOfSets.erase(listOfSets.begin() + index2);
+        return true;
+    }
+    return false;
+
+}
+
+//create N different sets, each one containing a single int from 1 to
+void Create(int N){
+    for(int k = 0; k < N; k++){
+        vector<vertex> set; //a single set
+        listOfSets.push_back(set);
+    }
+
+}
 
 //Comparison function to sort the vector of edges by the edge weight
 bool CompareByWeight(const edge& a, const edge& b){
@@ -62,64 +110,72 @@ long double EuclideanDistance(long double x1, long double y1, long double x2, lo
 int main(int argc, char** argv) {
     int numCases;
     int numPoints;
-    long double x;
-    long double y;
-    vector<long double> points;
-    vector<edge> edges;
+    double x, y;
+    
+    long double mstWeight = 0;
     
 
 
     cin >> numCases;
+    cout << fixed << setprecision(2);
 
     for(int i = 0; i < numCases; i++){
         cin >> numPoints;
-        //clear previous edges and points 
-        edges.clear(); 
-        points.clear();
+
+        //clear previous edges, vertices and disjoint sets
+        
+        vector<vertex> vertices; //Exactly what it looks like
+    	vector<edge> edges; //Also exactly what it looks like
+        listOfSets.clear();
+
+        mstWeight = 0; //Initialize MST weight
+
+        Create(numPoints); //Creat a vector of vectors (disjoint set)
 
         for(int j = 0; j < numPoints; j++){ //Take in points
             cin >> x >> y; 
-            points.push_back(x);
-            points.push_back(y);
-
+            vertex v;
+            v.x = x;
+            v.y = y;
+            vertices.push_back(v);
+            listOfSets[j].push_back(v); //fill each vector within a vector with a single vertex
         }
-        
+        /*
+        for(int i = 0; i < numPoints; i++){
+            for(int j = 0; j < listOfSets[i].size(); j++){
+                cout << "set number " << i+1 << ": " << listOfSets[i][j].x << ", " << listOfSets[i][j].y << endl;
+            }
+        }
+        */
 
-        for(int j = 0; j < points.size(); j+=2){ //Calculate Euclidean distance between every point
-            for(int k = j+2; k < points.size(); k+=2 ){
+        for(int j = 0; j < numPoints; j++){ //Calculate Euclidean distance between every point
+            for(int k = j+1; k < numPoints; k++ ){
                 edge e;
-                e.weight = EuclideanDistance(points[j], points[j+1], points[k], points[k+1]);
-                e.start = j/2 + 1;
-                e.end = k/2 + 1;
+                e.weight = EuclideanDistance(vertices[j].x, vertices[j].y, vertices[k].x, vertices[k].y);
+                e.start = vertices[j];
+                e.end = vertices[k];
                 edges.push_back(e); //Store the edges
             }
         }
 
         sort(edges.begin(), edges.end(), CompareByWeight); //Sort the edges by weight
 
-        int START; 
-        int END;
-
-        vector<int> MST;
-
-        MST.push_back(edges[0].start);
-        MST.push_back(edges[0].end);
-        long double totalWeight = edges[0].weight;
-
-        
         /*
-        cout << "Number of edges: " << edges.size() << endl;
-        cout << "First Edge weight: " << edges[0].weight << endl;
-        cout << "MST Size: " << MST.size() << endl;
-        
-
         for(int k = 0; k < edges.size(); k++){
-            cout << "The line from " << edges[k].start << " to " << 
-            edges[k].end << " has a weight of " << edges[k].weight << endl;
+            cout << "Line from " << edges[k].start.x << ", " << edges[k].start.y <<  " to " << 
+            edges[k].end.x << ", " << edges[k].end.y << " has a weight of " << edges[k].weight << endl;
         }
         */
 
-        for(int j = 1; j < edges.size(); j++){
+        for(int j = 0; j < edges.size(); j++){
+            if(Union(edges[j].start, edges[j].end)){ //If the two elements were in different sets,
+                mstWeight += edges[j].weight;        //add the weight to the total
+            }
+        }
+
+        cout << mstWeight << endl;
+        if(i != numCases - 1){ //Uva formatting garbage
+            cout << endl;
         }
         
     }

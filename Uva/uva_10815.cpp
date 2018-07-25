@@ -38,11 +38,12 @@
 
 using namespace std;
 
-string input;
-vector <string> dictionary;
+
 
 int main(){
-
+	string input;
+	vector <string> dictionary;
+	
 	while(cin >> input){
 		replace_if (input.begin(), input.end(), ::ispunct, ' '); //Replace punctuation with spaces
 		replace_if (input.begin(), input.end(), ::isdigit, ' '); //Replace numbers with spaces

@@ -19,7 +19,6 @@
  *	to save memory. Then count the number of TRUEs in the vector. Then for each x, 
  *	check if the vector[x] is true or not and print out 1 or 0 accordingly.
  *
- *
  * Used Resources:
  *
  *	https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes   

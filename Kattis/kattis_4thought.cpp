@@ -1,4 +1,4 @@
-/* Kattis problem: 4 THought
+/* Kattis problem: 4thought
  *
  * Topic: (see topic list)
  *

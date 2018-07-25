@@ -24,6 +24,7 @@
  *	 https://en.wikipedia.org/wiki/Graham_scan
  *	 https://en.wikipedia.org/wiki/Gift_wrapping_algorithm
  * 	 https://en.wikipedia.org/wiki/Shoelace_formula
+ *	 https://github.com/UAPSPC/Code-Archive/blob/master/2d_geometry/convex_hull.cpp
  *
  * I hereby certify that I have produced the following solution myself
  * using only the resources listed above in accordance with the CMPUT
@@ -50,7 +51,6 @@ struct point{
 //Struct containing info for each tree;
 struct tree{
 	point p;
-	int y;
 	int v;
 	int l;
 };
@@ -114,6 +114,7 @@ int main(){
 				extraWood = trees[1].v;
 				treesToCut.push_back(2);
 			}
+
 		}else{
 			for(int i = 1; i <= n - 1; i++){
 

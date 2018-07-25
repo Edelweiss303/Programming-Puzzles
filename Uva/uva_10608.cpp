@@ -93,10 +93,6 @@ void Create(int N){
 
 }
 
-
-
-
-
 int main(){
 
 	scanf("%d\n", &numDataSets);
